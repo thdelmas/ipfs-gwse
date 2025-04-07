@@ -17,18 +17,15 @@ services:
     build:
       context: ./frontend
     ports:
-      - "5173:80"
+      - "5173:5173"
     volumes:
-      - ./frontend:/app
+      - ./frontend/src:/app/src:Z
+      - ./frontend/public:/app/public:Z
     depends_on:
       - api
 
   ipfs:
     image: ipfs/go-ipfs:latest
-    ports:
-      - "4001:4001"
-      - "8080:8080"
-      - "5001:5001"
     volumes:
       - ipfs_data:/data/ipfs
 

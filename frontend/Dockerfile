@@ -1,10 +1,26 @@
-# build stage
-FROM node:18 AS build
+# Use the latest Node.js as the base image
+FROM node:latest
+
+# Set the working directory inside the container
 WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy the package.json and pnpm-lock.yaml files to the working directory
+COPY package.json  ./
+
+# Install the dependencies
+RUN pnpm install
+
+# Copy the rest of the application code to the working directory
 COPY . .
-RUN npm install && npm run build
 
-# serve stage (optional, if you want to serve static files)
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+# Build the Nuxt.js application
+RUN pnpm run build
 
+# Expose the port that the application will run on
+EXPOSE 5173
+
+# Start the application
+CMD ["pnpm", "dev"]
