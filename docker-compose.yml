@@ -1,0 +1,36 @@
+services:
+  api:
+    container_name: api
+    build:
+      context: ./api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+    depends_on:
+      - ipfs
+    environment:
+      - IPFS_HOST=ipfs
+      - IPFS_PORT=5001
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - api
+
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    ports:
+      - "4001:4001"
+      - "8080:8080"
+      - "5001:5001"
+    volumes:
+      - ipfs_data:/data/ipfs
+
+volumes:
+  ipfs_data:
